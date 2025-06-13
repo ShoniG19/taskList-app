@@ -9,6 +9,7 @@ import Lock from '@mui/icons-material/Lock';
 import Eye from '@mui/icons-material/Visibility';
 import EyeOff from '@mui/icons-material/VisibilityOff';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
+import { toast } from 'react-toastify';
 
 const Register = () => {
     const [showPassword, setShowPassword] = useState(false)
@@ -61,7 +62,10 @@ const Register = () => {
     try{
         const response = await register(formData)
         if(response) {
-          window.location.href = '/login';
+          toast.success('Account created successfully! Redirecting to login...')
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
         }
     } catch (error: unknown) {
       let message = 'Error desconocido al iniciar sesión';

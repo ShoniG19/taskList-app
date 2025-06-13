@@ -11,6 +11,7 @@ import Lock from '@mui/icons-material/Lock';
 import Eye from '@mui/icons-material/Visibility';
 import EyeOff from '@mui/icons-material/VisibilityOff';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -30,7 +31,10 @@ const Login = () => {
       const response = await login(formData)
       if (response?.token) {
         localStorage.setItem('token', response.token)
-        window.location.href = '/dashboard';
+        toast.success('Login successful!')    
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1500);
       }
     } catch (error: unknown) {
       let message = 'Error desconocido al iniciar sesión';

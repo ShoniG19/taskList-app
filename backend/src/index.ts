@@ -19,11 +19,12 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+
 app.get("/api/me", verifyToken, async (req, res) => {
   const userId = req.userId ? Number(req.userId) : undefined;
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, name: true },
+    select: { email: true, name: true, language: true, avatar: true, isActive: true, createdAt: true },
   });
 
   res.json(user);

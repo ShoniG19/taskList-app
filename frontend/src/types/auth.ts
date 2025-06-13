@@ -16,5 +16,9 @@ export interface AuthResponse {
     id: number;
     email: string;
     name?: string;
+    createdAt: string;
+    avatar?: string;
+    isActive: boolean;
+    language: string;
   };
 }

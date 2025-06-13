@@ -1,26 +1,37 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from './components/Login';
-import Home from './components/Home';
-import Register from './components/Register';
-import Dashboard from './components/Dashboard';
+import { ToastContainer } from 'react-toastify';
+
+import LoginPage from './components/LoginForm';
+import HomePage from './pages/HomePage';
+import RegisterPage from './pages/RegisterPage';
+import DashboardPage from './pages/DashboardPage';
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   const isAuthenticated = !!localStorage.getItem('token');
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/dashboard' element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <ToastContainer />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/register' element={<RegisterPage />} />
+          <Route path='/dashboard' element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <DashboardPage />
+            </ProtectedRoute>
+          } />
+          <Route path='/profile' element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

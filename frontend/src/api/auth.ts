@@ -14,7 +14,26 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
   return response.data;
 }
 
-export async function getCurrentUser(): Promise<{ email: string; name: string }> {
+export async function getCurrentUser(): Promise<{ email: string; name: string; language: string; avatar?: string; isActive: boolean; createdAt: string }> {
   const response = await api.get(`${API_URL}/me`);
+  console.log('Current user data:', response.data);
+  return response.data;
+}
+
+export async function updateUser(data: Partial<{ email: string; name: string; language: string; avatar?: string; isActive: boolean }>): Promise<void> {
+  const response = await api.put(`${API_URL}/auth/update`, data);
+  return response.data;
+}
+
+export async function updatePassword(data: { currentPassword: string; newPassword: string }): Promise<void> {
+  const response = await api.put(`${API_URL}/auth/update-password`, data);
+  if(response.status === 400) {
+    throw new Error('Current password is incorrect');
+  }
+  return response.data;
+}
+
+export async function deleteUser(): Promise<void> {
+  const response = await api.delete(`${API_URL}/auth/delete`);
   return response.data;
 }

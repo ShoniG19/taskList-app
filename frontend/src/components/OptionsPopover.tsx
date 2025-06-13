@@ -18,7 +18,7 @@ const OptionsPopover = () => {
         <div className="py-1 text-sm text-slate-700">
           <button
             className="block w-full px-4 py-2 hover:bg-emerald-200 text-left"
-            onClick={() => console.log('Profile Settings')}
+            onClick={() => window.location.href = '/profile'}
           >
             Profile Settings
           </button>
