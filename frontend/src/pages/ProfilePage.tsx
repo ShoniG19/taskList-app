@@ -27,8 +27,6 @@ const ProfilePage = () => {
       </header>
 
       <ProfileForm />
-
-      {/* Footer */}
       
     </div>
   )

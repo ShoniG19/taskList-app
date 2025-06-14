@@ -1,7 +1,12 @@
 import { Popover } from '@headlessui/react';
+
+import { useTranslation } from 'react-i18next';
+
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 
 const OptionsPopover = () => {
+
+  const { t } = useTranslation();
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -20,13 +25,13 @@ const OptionsPopover = () => {
             className="block w-full px-4 py-2 hover:bg-emerald-200 text-left"
             onClick={() => window.location.href = '/profile'}
           >
-            Profile Settings
+            {t("profile_settings")}
           </button>
           <button
             className="block w-full px-4 py-2 text-red-600 hover:bg-red-50 text-left"
             onClick={() => logout()}
           >
-            Sign Out
+            {t("sign_out")}
           </button>
         </div>
       </Popover.Panel>

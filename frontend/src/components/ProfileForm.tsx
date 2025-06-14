@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { AxiosError } from "axios";
-import { API_URL } from "../utils/api";
+
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n"; 
 
 import { getCurrentUser, updateUser, deleteUser, updatePassword, uploadAvatar } from "../api/auth";
-import DeleteUserModal from "./DeleteUserModal";
+import DeleteModal from "./DeleteModal";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import UploadIcon from "@mui/icons-material/Upload";
@@ -50,19 +52,25 @@ const ProfileForm = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [currentLanguage, setCurrentLanguage] = useState<string>("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const user = await getCurrentUser();
         setProfileForm({
-          name: user.name || "Anonimo",
+          name: user.name || t("anonymous"),
           email: user.email || "",
           language: user.language || "",
           avatar: user.avatar || "",
           isActive: user.isActive || false,
           createdAt: new Date(user.createdAt).toISOString().split("T")[0] || "",
         });
+        setCurrentLanguage(user.language || "");
+        if (user?.language) {
+          i18n.changeLanguage(user.language);
+        }
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }
@@ -95,7 +103,11 @@ const ProfileForm = () => {
         await uploadAvatar(formData);
       }
       await updateUser(profileForm);
-      toast.success("User updated successfully!");
+
+      if (profileForm.language && profileForm.language !== currentLanguage) {
+        await i18n.changeLanguage(profileForm.language);
+      }
+      toast.success(t("user_updated"));
     } catch (error) {
       console.error("Error updating user:", error);
     } finally {
@@ -130,7 +142,7 @@ const ProfileForm = () => {
         setError(null);
         setErrorMatchPassword(null);
         if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-            setErrorMatchPassword("Passwords do not match"); 
+            setErrorMatchPassword(t("not_match"));
             setIsLoading(false);
             return;   
         }
@@ -138,7 +150,7 @@ const ProfileForm = () => {
         const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*/\-_=+<>?])[A-Za-z0-9!@#$%^&*/\-_=+<>?]{8,}$/;
 
         if (!passwordRegex.test(passwordForm.newPassword)) {
-            setErrorMatchPassword("Password must be at least 8 characters long and include a number and a special character.");
+            setErrorMatchPassword(t("password_invalid"));
             setIsLoading(false);
             return;
         }
@@ -155,12 +167,12 @@ const ProfileForm = () => {
                 newPassword: "",
                 confirmPassword: "",
             });
-            
-            toast.success("Password updated successfully!");
+
+            toast.success(t("password_updated"));
         } catch (err: unknown) {
             const error = err as AxiosError<{ message: string }>;
             if(error.response && error.response.status === 400) {
-                setError("Current password is incorrect");
+                setError(t("current_incorrect"));
             }
         } finally {
             setIsLoading(false);
@@ -176,14 +188,13 @@ const ProfileForm = () => {
         setDeleteLoading(true);
         try {
             await deleteUser();
-            toast.success("User deleted successfully!");
+            toast.success(t("user_deleted"));
             setTimeout(() => {
                 window.location.href = "/";
-            }
-            , 2000);
+            }, 2000);
         } catch (error) {
             console.error("Error deleting user:", error);
-            toast.error("Failed to delete user.");
+            toast.error(t("failed_delete_user"));
         } finally {
             setDeleteLoading(false);
         }
@@ -244,7 +255,7 @@ const ProfileForm = () => {
 
                 <div className="w-full mt-6">
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-slate-500">Account Status</span>
+                    <span className="text-slate-500">{t("account_status")}</span>
                     <span
                       className={`font-medium ${
                         profileForm.isActive
@@ -252,11 +263,11 @@ const ProfileForm = () => {
                           : "text-red-600"
                       }`}
                     >
-                      {profileForm.isActive ? "Active" : "Inactive"}
+                      {profileForm.isActive ? t("active") : t("inactive")}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Member Since</span>
+                    <span className="text-slate-500">{t("member_since")}</span>
                     <span className="text-slate-700">
                       {profileForm.createdAt}
                     </span>
@@ -269,12 +280,12 @@ const ProfileForm = () => {
                     {deleteLoading ? (
                         <>
                         <RotateRightIcon className="animate-spin mr-2" />
-                        Deleting...
+                        {t("deleting")}
                         </>
                     ) : (
                         <>
                         <DeleteIcon className="w-4 h-4" />
-                        Delete Account
+                        {t("delete_account")}
                         </>
                     )}
                 </button>
@@ -286,9 +297,9 @@ const ProfileForm = () => {
         <div className="md:w-2/3 bg-white rounded-lg shadow-md p-6">
           <div>
             <div>
-              <h1 className="text-xl font-bold">Account Settings</h1>
+              <h1 className="text-xl font-bold">{t("account_settings")}</h1>
               <p className="text-slate-500 mt-1">
-                Manage your profile and preferences
+                {t("manage_profile")}
               </p>
             </div>
 
@@ -301,21 +312,22 @@ const ProfileForm = () => {
               className="mt-4 w-full"
               TabIndicatorProps={{ style: { backgroundColor: "#10B981" } }}
             >
-              <Tab label="Profile" style={{ color: "#10B981" }} />
-              <Tab label="Security" style={{ color: "#10B981" }} />
+              <Tab label={t("profile")} style={{ color: "#10B981" }} />
+              <Tab label={t("security")} style={{ color: "#10B981" }} />
             </Tabs>
             {activeTab === 0 && (
               <form onSubmit={handleSubmit} className="space-y-6 mt-6">
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <h1 className="font-semibold">Full Name</h1>
+                      <h1 className="font-semibold">{t("full_name")}</h1>
                       <div className="relative">
                         <AccountCircleIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                         <input
                           id="name"
                           name="name"
                           value={profileForm.name}
+                          placeholder={t("placeholder_full_name")}
                           onChange={handleNameChange}
                           className="pl-10 border border-slate-300 rounded-md w-full py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         />
@@ -323,7 +335,7 @@ const ProfileForm = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <h1 className="font-semibold">Email Address</h1>
+                      <h1 className="font-semibold">{t("email")}</h1>
                       <div className="relative">
                         <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                         <input
@@ -332,6 +344,7 @@ const ProfileForm = () => {
                           type="email"
                           required
                           value={profileForm.email}
+                          placeholder={t("placeholder_email")}
                           onChange={handleEmailChange}
                           className="pl-10 border border-slate-300 rounded-md w-full py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         />
@@ -341,7 +354,7 @@ const ProfileForm = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <h1 className="font-semibold">Language</h1>
+                      <h1 className="font-semibold">{t("language")}</h1>
                       <div className="relative flex items-between">
                         <LanguageIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                         <select
@@ -355,10 +368,10 @@ const ProfileForm = () => {
                           className="pl-10 border border-slate-300 rounded-md w-full py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         >
                           <option value="" disabled>
-                            Select language
+                            {t("select_language")}
                           </option>
-                          <option value="en">English</option>
-                          <option value="es">Spanish</option>
+                          <option value="en">{t("english")}</option>
+                          <option value="es">{t("spanish")}</option>
                         </select>
                       </div>
                     </div>
@@ -369,7 +382,7 @@ const ProfileForm = () => {
                     className="bg-emerald-600 hover:bg-emerald-700 rounded-md text-white font-semibold px-3 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     disabled={isLoading}
                   >
-                    {isLoading ? <><RotateRightIcon className="animate-spin mr-2" /> Saving...</>: "Save Changes"}
+                    {isLoading ? <><RotateRightIcon className="animate-spin mr-2" /> {t("saving")}...</> : t("save_changes")}
                   </button>
                 </div>
               </form>
@@ -378,7 +391,7 @@ const ProfileForm = () => {
               <form onSubmit={handleSubmitPassword} className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <h1>Current Password</h1>
+                    <h1>{t("current_password")}</h1>
                     <div className="relative">
                       <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                       <input
@@ -386,6 +399,7 @@ const ProfileForm = () => {
                         name="currentPassword"
                         type={showCurrentPassword ? "text" : "password"}
                         required
+                        placeholder={t("placeholder_current_password")}
                         value={passwordForm.currentPassword}
                         onChange={handleCurrentPasswordChange}
                         className="pl-10 rounded border border-slate-300 w-full py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -406,7 +420,7 @@ const ProfileForm = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <h1>New Password</h1>
+                    <h1>{t("new_password")}</h1>
                     <div className="relative">
                       <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                       <input
@@ -414,6 +428,7 @@ const ProfileForm = () => {
                         name="newPassword"
                         type={showNewPassword ? "text" : "password"}
                         required
+                        placeholder={t("placeholder_new_password")}
                         value={passwordForm.newPassword}
                         onChange={handleNewPasswordChange}
                         className="pl-10 rounded border border-slate-300 w-full py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -427,13 +442,12 @@ const ProfileForm = () => {
                       </button>
                     </div>
                     <p className="text-xs text-slate-500">
-                      Password must be at least 8 characters and include a
-                      number and special character.
+                      {t("password_invalid")}
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <h1>Confirm New Password</h1>
+                    <h1>{t("confirm_new_password")}</h1>
                     <div className="relative">
                       <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                       <input
@@ -441,6 +455,7 @@ const ProfileForm = () => {
                         name="confirmPassword"
                         type= {showConfirmPassword ? "text" : "password"}
                         required
+                        placeholder={t("placeholder_confirm_new_password")}
                         value={passwordForm.confirmPassword}
                         onChange={handleConfirmPasswordChange}
                         className="pl-10 rounded border border-slate-300 w-full py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -466,17 +481,18 @@ const ProfileForm = () => {
                   className="bg-emerald-600 hover:bg-emerald-700 rounded-md text-white font-semibold px-3 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   disabled={isLoading}
                 >
-                  {isLoading ? <><RotateRightIcon className="animate-spin mr-2" /> Updating...</> : "Update Password"}
+                  {isLoading ? <><RotateRightIcon className="animate-spin mr-2" /> {t("updating")}...</> : t("update_password")}
                 </button>
               </form>
             )}
           </div>
         </div>
       </div>
-      <DeleteUserModal
+      <DeleteModal
         show={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={confirmDelete}
+        message={t("user")}
       />
     </div>
   );

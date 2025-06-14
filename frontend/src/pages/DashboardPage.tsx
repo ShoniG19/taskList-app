@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+
+import { useTranslation } from "react-i18next";
+
 import Dashboard from "../components/Dashboard";
 import OptionsPopover from "../components/OptionsPopover";
 
@@ -16,6 +19,7 @@ const DashboardPage = () => {
       } | null>(null);
 
     const [showAvatarModal, setShowAvatarModal] = useState(false);
+    const { t } = useTranslation();
     useEffect(() => {
         const fetchCurrentUser = async () => {
               const user = await getCurrentUser();
@@ -54,7 +58,7 @@ const DashboardPage = () => {
                   <img
                     src={currentUser.avatar}
                     alt="User avatar"
-                    className="w-12 h-12 rounded-full object-cover border border-gray-300"
+                    className="w-12 h-12 rounded-full object-cover border border-gray-300 cursor-pointer"
                     onClick={handleAvatarClick}
                   />
                 ) : (
@@ -64,7 +68,7 @@ const DashboardPage = () => {
                   />
                 )}
                 <span className="text-sm text-slate-600">
-                  {currentUser?.name || "Anonimo"}
+                  {currentUser?.name || t("anonymous")}
                 </span>
               </div>
 

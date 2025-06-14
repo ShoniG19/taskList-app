@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 import type { Task } from "../types/task";
 
 import { fetchTasks, createTask, updateTask, deleteTask } from "../api/task";
 
 import EditTaskModal from "./EditTaskModal";
+import DeleteModal from "./DeleteModal";
 
 import AdjustIcon from "@mui/icons-material/Adjust";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
@@ -39,11 +41,13 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [idDelete, setIdDelete] = useState<number | null>(null);
 
   const [sort, setSort] = useState<"dueDate" | "priority" | "alphabetical">(
     "dueDate"
   );
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [showModal, setShowModal] = useState(false);    
 
   const { t } = useTranslation();
 
@@ -114,10 +118,20 @@ const Dashboard = () => {
     setModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    await deleteTask(id);
-    setTasks(tasks.filter((t) => t.id !== id));
-    loadTasks();
+  const handleDelete = (id: number) => {
+    setIdDelete(id);
+    setShowModal(true);
+  }
+
+  const confirmDelete = async () => {
+    setShowModal(false);
+    if (idDelete !== null) {
+      await deleteTask(idDelete);
+      toast.success(t("task_deleted_successfully"));
+      setTasks(tasks.filter((t) => t.id !== idDelete));
+      loadTasks();
+      setIdDelete(null);
+    }
   };
 
   return (
@@ -403,6 +417,12 @@ const Dashboard = () => {
                     isOpen={isModalOpen}
                     onClose={() => setModalOpen(false)}
                     onUpdated={loadTasks}
+                  />
+                  <DeleteModal
+                    show={showModal}
+                    onClose={() => setShowModal(false)}
+                    onConfirm={confirmDelete}
+                    message={t("task")}
                   />
                 </div>
               </div>
