@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { AxiosError } from "axios";
+import { API_URL } from "../utils/api";
 
-import { getCurrentUser, updateUser, deleteUser, updatePassword } from "../api/auth";
+import { getCurrentUser, updateUser, deleteUser, updatePassword, uploadAvatar } from "../api/auth";
 import DeleteUserModal from "./DeleteUserModal";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -46,6 +47,10 @@ const ProfileForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showModal, setShowModal] = useState(false);    
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -84,6 +89,11 @@ const ProfileForm = () => {
     event.preventDefault();
     setIsLoading(true);
     try {
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("avatar", selectedFile);
+        await uploadAvatar(formData);
+      }
       await updateUser(profileForm);
       toast.success("User updated successfully!");
     } catch (error) {
@@ -179,6 +189,17 @@ const ProfileForm = () => {
         }
     }
 
+    const handleUploadClick = () => {
+      fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      setSelectedFile(file);
+      setPreviewImage(URL.createObjectURL(file));
+    };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
@@ -188,11 +209,35 @@ const ProfileForm = () => {
             <div className="pt-6">
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
-                  <AccountCircleIcon  fontSize="large" />
-                  <button className="absolute bottom-0 right-0 rounded-full w-8 h-8 p-0 bg-emerald-600 hover:bg-emerald-700">
+                 {previewImage ? (
+                    <img
+                      src={previewImage}
+                      alt="Preview avatar"
+                      className="w-24 h-24 rounded-full object-cover border border-gray-300"
+                    />
+                  ) : profileForm.avatar ? (
+                    <img
+                      src={profileForm.avatar}
+                      alt="User avatar"
+                      className="w-24 h-24 rounded-full object-cover border border-gray-300"
+                    />
+                  ) : (
+                    <AccountCircleIcon sx={{ fontSize: 100 }} />
+                  )}
+                  <button 
+                    className="absolute bottom-0 right-0 rounded-full w-8 h-8 p-0 bg-emerald-600 hover:bg-emerald-700"
+                    onClick={handleUploadClick}  
+                  >
                     <UploadIcon className="w-4 h-4" />
                     <span className="sr-only">Upload avatar</span>
                   </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
                 </div>
                 <h2 className="text-xl font-bold">{profileForm.name}</h2>
                 <p className="text-slate-500 text-sm">{profileForm.email}</p>

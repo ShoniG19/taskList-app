@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import type { Task } from "../types/task";
 
 import { fetchTasks, createTask, updateTask, deleteTask } from "../api/task";
@@ -42,6 +44,8 @@ const Dashboard = () => {
     "dueDate"
   );
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const { t } = useTranslation();
 
   const loadTasks = async () => {
     try {
@@ -131,14 +135,14 @@ const Dashboard = () => {
                       className="text-emerald-600"
                       fontSize="medium"
                     />
-                    Progress
+                    {t("progress")}
                   </h1>
                 </div>
                 <div>
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span>Completion Rate</span>
+                        <span>{t("completion_rate")}</span>
                         <span className="font-semibold">
                           {completionRate}%{" "}
                           {completionRate === 100 ? (
@@ -162,13 +166,13 @@ const Dashboard = () => {
                         <div className="text-2xl font-bold text-emerald-600">
                           {completedCount}
                         </div>
-                        <div className="text-xs text-slate-600">Completed</div>
+                        <div className="text-xs text-slate-600">{t("completed")}</div>
                       </div>
                       <div>
                         <div className="text-2xl font-bold text-slate-700">
                           {totalCount - completedCount}
                         </div>
-                        <div className="text-xs text-slate-600">Remaining</div>
+                        <div className="text-xs text-slate-600">{t("remaining")}</div>
                       </div>
                     </div>
                   </div>
@@ -183,24 +187,24 @@ const Dashboard = () => {
                       className="text-emerald-600"
                       fontSize="medium"
                     />
-                    Quick Stats
+                    {t("quick_stats")}
                   </h1>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600">Total Tasks</span>
+                    <span className="text-sm text-slate-600">{t("total_tasks")}</span>
                     <span className="font-semibold">{totalCount}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-slate-600">
-                      High Priority
+                      {t("high_priority")}
                     </span>
                     <span className="font-semibold text-red-600">
                       {highPriorityCount}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600">Due Today</span>
+                    <span className="text-sm text-slate-600">{t("due_today")}</span>
                     <span className="font-semibold text-orange-600">
                       {dueTodayCount}
                     </span>
@@ -214,12 +218,12 @@ const Dashboard = () => {
             <div>
               <div>
                 <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                  <h1 className="text-xl font-semibold">My Tasks</h1>
+                  <h1 className="text-xl font-semibold">{t("my_tasks")}</h1>
                   <div className="flex gap-2 w-full sm:w-auto">
                     <div className="relative flex-1 sm:w-64 items-center justify-center">
                       <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                       <input
-                        placeholder="Search tasks..."
+                        placeholder={t("placeholder_search")}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-10 border border-slate-300 rounded-lg w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
@@ -237,9 +241,9 @@ const Dashboard = () => {
                         }
                         className="appearance-none pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       >
-                        <option value="all">All Tasks</option>
-                        <option value="active">Active</option>
-                        <option value="completed">Completed</option>
+                        <option value="all">{t("all")}</option>
+                        <option value="active">{t("active")}</option>
+                        <option value="completed">{t("completed")}</option>
                       </select>
                     </div>
                   </div>
@@ -249,7 +253,7 @@ const Dashboard = () => {
               <div className="mt-6">
                 <div className="flex gap-2 mb-6">
                   <input
-                    placeholder="Add a new task..."
+                    placeholder={t("add_new_task")}
                     value={newTask}
                     onChange={(e) => setNewTask(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleCreate()}
@@ -261,13 +265,13 @@ const Dashboard = () => {
                     className="bg-emerald-600 hover:bg-emerald-700 rounded-lg text-white px-4 py-2 flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
                     <Add className="mr-2" fontSize="medium" />
-                    Add
+                    {t("button_add")}
                   </button>
                 </div>
 
                 <div className="space-y-3">
                   <div className="mb-4 flex items-center justify-end gap-4">
-                    <p className="font-semibold">Sorted by:</p>
+                    <p className="font-semibold">{t("sort_by")}:</p>
                     <select
                       className="mt-1 block border border-slate-300 rounded-lg bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       value={sort}
@@ -280,9 +284,9 @@ const Dashboard = () => {
                         );
                       }}
                     >
-                      <option value="dueDate">Due Date</option>
-                      <option value="priority">Priority</option>
-                      <option value="alphabetical">Alphabetical</option>
+                      <option value="dueDate">{t("due_date")}</option>
+                      <option value="priority">{t("priority")}</option>
+                      <option value="alphabetical">{t("alphabetical")}</option>
                     </select>
                     <button
                       className="border border-slate-300 rounded-lg px-2 py-1 text-black"
@@ -306,8 +310,8 @@ const Dashboard = () => {
                         fontSize="large"
                       />
                       <div className="mb-4 text-slate-300" />
-                      <p>No tasks found</p>
-                      <p className="text-sm">Add a new task to get started!</p>
+                      <p>{t("no_tasks")}</p>
+                      <p className="text-sm">{t("task_started")}</p>
                     </div>
                   ) : (
                     filteredTasks.map((task) => (
@@ -356,14 +360,18 @@ const Dashboard = () => {
                                   : "bg-green-100 text-green-600"
                               }`}
                             >
-                              {task.priority}
+                              {task.priority === "high"
+                                ? t("high")
+                                : task.priority === "medium"
+                                ? t("medium")
+                                : t("low")}
                             </span>
                           </div>
 
                           {task.dueDate && (
                             <div className="flex items-center gap-1 text-xs text-slate-500">
                               <TodayIcon fontSize="small" />
-                              Due:{" "}
+                              {t("due")}:{" "}
                               {
                                 new Date(task.dueDate)
                                   .toISOString()
@@ -401,21 +409,21 @@ const Dashboard = () => {
             </div>
             <div className="flex items-end justify-between mt-6">
               <span className="text-sm text-slate-600 mr-4">
-                Showing {(page - 1) * 10 + 1}-{Math.min(page * 10, totalCount)}{" "}
-                of {totalCount} tasks
+                {t("showing")} {(page - 1) * 10 + 1}-{Math.min(page * 10, totalCount)}{" "}
+                {t("of")} {totalCount} {t("tasks")}
               </span>
               <span className="flex items-center gap-2">
                 <button
                   className="border border-slate-300 rounded-lg bg-emerald-600 px-2 py-1 text-white"
                   onClick={() => setPage((p) => Math.max(p - 1, 1))}
                 >
-                  Previous
+                  {t("previous")}
                 </button>
                 <button
                   className="border border-slate-300 rounded-lg bg-emerald-600 px-2 py-1 text-white"
                   onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                 >
-                  Next
+                  {t("next")}
                 </button>
               </span>
             </div>

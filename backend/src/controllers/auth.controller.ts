@@ -47,7 +47,7 @@ export const login: RequestHandler = async (req: Request, res: Response) => {
 
 export const updateUser: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const userId = req.userId ? Number(req.userId) : undefined;
-  const { name, email, language, avatar } = req.body;
+  const { name, email, language } = req.body;
   console.log("userId:", userId);
   if (!userId) {
     res.status(401).json({ message: "Usuario no autenticado" });
@@ -57,17 +57,38 @@ export const updateUser: RequestHandler = async (req: Request, res: Response): P
   try {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { name, email, language, avatar },
+      data: { name, email, language },
     });
 
     res.json({
       email: updatedUser.email,
       name: updatedUser.name,
       language: updatedUser.language,
-      avatar: updatedUser.avatar,
     });
   } catch (error) {
     res.status(500).json({ message: "Error al actualizar usuario", error });
+  }
+};
+
+export const uploadAvatar: RequestHandler = async (req, res):Promise<void> => {
+  const userId = req.userId ? Number(req.userId) : undefined;
+  
+  if (!userId || !req.file) {
+    res.status(400).json({ message: "Invalid request" });
+    return;
+  }
+
+  try {
+     const avatarUrl = (req.file as Express.Multer.File).path;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { avatar: avatarUrl },
+    });
+
+    res.status(200).json({ avatar: updatedUser.avatar });
+  } catch (error) {
+    res.status(500).json({ message: "Error uploading avatar", error });
   }
 };
 

@@ -1,6 +1,5 @@
 import { Request, Response, RequestHandler } from "express";
 import prisma from "../prisma";
-import { Prisma } from "@prisma/client";
 
 export const createTask: RequestHandler = async (
   req: Request,
@@ -139,8 +138,6 @@ export const updateTask: RequestHandler = async (
       data.dueDate = new Date(dueDate);
     }
   }
-
-  console.log("Updating task with data:", data);
 
   try {
     const task = await prisma.task.updateMany({

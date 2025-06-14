@@ -16,7 +16,6 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
 
 export async function getCurrentUser(): Promise<{ email: string; name: string; language: string; avatar?: string; isActive: boolean; createdAt: string }> {
   const response = await api.get(`${API_URL}/me`);
-  console.log('Current user data:', response.data);
   return response.data;
 }
 
@@ -24,6 +23,13 @@ export async function updateUser(data: Partial<{ email: string; name: string; la
   const response = await api.put(`${API_URL}/auth/update`, data);
   return response.data;
 }
+
+export const uploadAvatar = async (formData: FormData) => {
+  const response = await api.put(`${API_URL}/auth/update-avatar`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+};
 
 export async function updatePassword(data: { currentPassword: string; newPassword: string }): Promise<void> {
   const response = await api.put(`${API_URL}/auth/update-password`, data);

@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
 import cors from "cors";
+import path from "path";
 import { verifyToken } from "./middlewares/auth.middleware";
 import prisma from "./prisma";
 
@@ -9,6 +10,7 @@ declare global {
   namespace Express {
     interface Request {
       userId?: string;
+      file?: Express.Multer.File;
     }
   }
 }
@@ -16,6 +18,7 @@ declare global {
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);

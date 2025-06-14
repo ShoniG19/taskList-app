@@ -6,20 +6,37 @@ import { getCurrentUser } from "../api/auth";
 
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CloseIcon from "@mui/icons-material/Close";
 
 const DashboardPage = () => {
       const [currentUser, setCurrentUser] = useState<{
         email: string;
         name: string;
+        avatar: string | undefined;
       } | null>(null);
 
+    const [showAvatarModal, setShowAvatarModal] = useState(false);
     useEffect(() => {
         const fetchCurrentUser = async () => {
               const user = await getCurrentUser();
-              setCurrentUser(user);
+              setCurrentUser({
+                email: user.email,
+                name: user.name,
+                avatar: user.avatar !== undefined ? user.avatar : undefined,
+              });
         };
         fetchCurrentUser();
     }, []);
+
+    const handleAvatarClick = () => {
+      if (currentUser?.avatar) {
+        setShowAvatarModal(true);
+      }
+    };
+
+    const closeAvatarModal = () => {
+      setShowAvatarModal(false);
+    };
 
   return (
     <div>
@@ -33,10 +50,19 @@ const DashboardPage = () => {
 
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <AccountCircleIcon
-                  fontSize="large"
-                  className="text-slate-600"
-                />
+                {currentUser?.avatar ? (
+                  <img
+                    src={currentUser.avatar}
+                    alt="User avatar"
+                    className="w-12 h-12 rounded-full object-cover border border-gray-300"
+                    onClick={handleAvatarClick}
+                  />
+                ) : (
+                  <AccountCircleIcon
+                    fontSize="large"
+                    className="text-slate-600"
+                  />
+                )}
                 <span className="text-sm text-slate-600">
                   {currentUser?.name || "Anonimo"}
                 </span>
@@ -51,6 +77,28 @@ const DashboardPage = () => {
       </header>
 
       <Dashboard />
+      
+      {showAvatarModal && currentUser?.avatar && (
+        <div 
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
+          onClick={closeAvatarModal}
+        >
+          <div className="relative max-w-2xl max-h-[90vh] p-4">
+            <button
+              onClick={closeAvatarModal}
+              className="absolute -top-2 -right-2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors z-10"
+            >
+              <CloseIcon className="w-6 h-6 text-gray-600" />
+            </button>
+            <img
+              src={currentUser.avatar}
+              alt="User avatar enlarged"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
 
     </div>
   );
