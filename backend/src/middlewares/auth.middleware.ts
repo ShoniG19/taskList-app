@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "s3Cr3t_K3y";
 
 interface AuthRequest extends Request {
-  userId?: number; 
+  userId?: string; 
 }
 
 export const verifyToken: RequestHandler = (req, res, next) => {
@@ -18,7 +18,7 @@ export const verifyToken: RequestHandler = (req, res, next) => {
 
   const token = authHeader.split(" ")[1];
   try{
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
     authReq.userId = decoded.userId;
     next();
   } catch (err) {
