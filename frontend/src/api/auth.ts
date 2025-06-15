@@ -2,7 +2,7 @@ import axios from 'axios';
 import api from '../utils/api'; 
 import type { LoginData, RegisterData, AuthResponse } from '../types/auth';
 
-const API_URL = 'http://localhost:3000/api'; 
+const API_URL = process.env.VITE_API_URL || 'http://localhost:3000/api';
 
 export async function login(data: LoginData): Promise<AuthResponse> {
   const response = await axios.post(`${API_URL}/auth/login`, data);
