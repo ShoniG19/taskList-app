@@ -43,3 +43,16 @@ export async function deleteUser(): Promise<void> {
   const response = await api.delete(`${API_URL}/auth/delete`);
   return response.data;
 }
+
+export async function requestPasswordReset(email: string): Promise<{ message: string }> {
+  const response = await axios.post(`${API_URL}/auth/forgot-password`, { email });
+  return response.data;
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+  const response = await axios.post(`${API_URL}/auth/reset-password`, {
+    token,
+    newPassword,
+  });
+  return response.data;
+}

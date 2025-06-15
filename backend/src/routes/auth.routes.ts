@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, login, updateUser, deleteUser, updatePassword, uploadAvatar } from "../controllers/auth.controller";
+import { register, login, updateUser, deleteUser, updatePassword, uploadAvatar, forgotPassword, resetPassword } from "../controllers/auth.controller";
 import { verifyToken } from "../middlewares/auth.middleware";
 import { upload } from '../middlewares/cloudinaryUploader';
 
@@ -11,5 +11,7 @@ router.put("/update", verifyToken, updateUser);
 router.put("/update-password", verifyToken, updatePassword);
 router.put("/update-avatar", verifyToken, upload.single("avatar"), uploadAvatar);
 router.delete("/delete", verifyToken, deleteUser);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 export default router;

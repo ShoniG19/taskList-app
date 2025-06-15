@@ -124,5 +124,27 @@
   "placeholder_new_password": "Ingresa tu nueva contraseña",
   "placeholder_confirm_new_password": "Confirma tu nueva contraseña",
   "profile":"Perfil",
-  "security":"Seguridad"
+  "security":"Seguridad",
+
+  "error_password": "Error al solicitar el restablecimiento de contraseña",
+  "reset_password": "Restablece tu contraseña",
+  "enter_email": "Ingresa tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña",
+  "send_password_reset": "Te enviaremos un enlace para restablecer la contraseña a esta dirección de correo electrónico",
+  "sending_reset": "Enviando enlace de restablecimiento...",
+  "send_reset_link": "Enviar Enlace de Restablecimiento",
+  "back_to_sign_in": "Volver a Iniciar Sesión",
+
+  "check_email": "Revisa tu Correo Electrónico",
+  "reset_link": "Hemos enviado un enlace para restablecer la contraseña a",
+  "receive_email": "¿No recibiste el correo electrónico?",
+  "spam": "Revisa tu carpeta de spam o intenta nuevamente con una dirección de correo electrónico diferente.",
+  "different_email": "Intenta con un Correo Electrónico Diferente",
+
+  "create_password": "Crea tu nueva contraseña",
+  "enter_new_password": "Ingresa tu nueva contraseña a continuación. Asegúrate de que sea fuerte y segura.",
+  "resetting_password": "Restableciendo Contraseña...",
+  "reset_password_btn":"Restablecer Contraseña",
+  "failed_reset_password": "Error al restablecer la contraseña",
+  "remember_password": "¿Recuerdas tu contraseña?",
+  "password_reset_success": "¡Contraseña restablecida con éxito!. Redirigiendo a la página de inicio de sesión..."
 }

@@ -24,6 +24,8 @@ model User {
   password  String
   tasks     Task[]  // Relation 1:N to Task
   createdAt DateTime @default(now())
+  resetToken         String? @db.VarChar(255)
+  resetTokenExpires  DateTime?
 }
 
 model Task {

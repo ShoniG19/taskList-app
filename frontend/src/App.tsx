@@ -7,6 +7,8 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProfilePage from './pages/ProfilePage';
+import RequestResetPage from './pages/RequestResetPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 function App() {
   const isAuthenticated = !!localStorage.getItem('token');
@@ -29,6 +31,8 @@ function App() {
               <ProfilePage />
             </ProtectedRoute>
           } />
+          <Route path='/forgot-password' element={<RequestResetPage />} />
+          <Route path='/reset-password' element={<ResetPasswordPage />} />
         </Routes>
       </BrowserRouter>
     </>

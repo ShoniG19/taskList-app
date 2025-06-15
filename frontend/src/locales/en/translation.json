@@ -124,5 +124,27 @@
   "placeholder_new_password": "Enter your new password",
   "placeholder_confirm_new_password": "Confirm your new password",
   "profile":"Profile",
-  "security":"Security"
+  "security":"Security",
+
+  "error_password": "Error requesting password reset",
+  "reset_password": "Reset your password",
+  "enter_email": "Enter your email address and we'll send you a link to reset your password",
+  "send_password_reset": "We'll send a password reset link to this email address",
+  "sending_reset": "Sending reset link...",
+  "send_reset_link": "Send Reset Link",
+  "back_to_sign_in": "Back to Sign In",
+
+  "check_email": "Check your email",
+  "reset_link": "We've sent a password reset link to",
+  "receive_email": "Didn't receive the email?",
+  "spam": "Check your spam folder or try again with a different email address.",
+  "different_email": "Try Different Email Address",
+
+  "create_password": "Create your new password",
+  "enter_new_password": "Enter your new password below. Make sure it's strong and secure.",
+  "resetting_password": "Resetting Password...",
+  "reset_password_btn":"Reset Password",
+  "failed_reset_password": "Failed to reset password",
+  "remember_password": "Remember your password?",
+  "password_reset_success": "Password reset successfully! Redirecting to the login page..."
 }
