@@ -305,7 +305,8 @@ const ProfileForm = () => {
 
             <Tabs
               value={activeTab}
-              onChange={(e, newValue) => {
+              onChange={(e,newValue) => {
+                e.preventDefault();
                 setActiveTab(newValue);
               }}
               centered
