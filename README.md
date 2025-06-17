@@ -78,7 +78,7 @@ taskList-app/
 ### 1. Clonar repositorio
 
 ```bash
-git clone https://github.com/tuusuario/taskList-app.git
+git clone https://github.com/ShoniG19/taskList-app.git
 cd taskList-app
 ```
 ### 2. Instalar dependencias
